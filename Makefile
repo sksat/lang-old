@@ -1,4 +1,4 @@
-TARGET	= test
+TARGET	= test.exe
 OBJS	= main.o
 
 SRC	= test.src
