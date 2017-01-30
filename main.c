@@ -14,9 +14,15 @@ typedef struct {
 	char *token;
 }DEBUG_INFO;
 
+typedef struct {
+	int num;
+	char *str;
+}SENTENCE_INFO;
+
 int EXEC_MODE;
 
 int langMainLoop(FILE *fp);
+int is_sentence(char *buf);
 
 int main(int argc, char **argv){
 	FILE *fp;
@@ -56,14 +62,19 @@ int langMainLoop(FILE *fp){
 //		if(!(is_sentence(buf))){
 //			
 //		}
+		SENTENCE_INFO sinfo;
 		
-		// 文の塊になるまで読み込み続ける
-		for(i=0;;i++){
-			if(is_sentence(buf)){
-				break;
-			}
-			if(i != 0){
-				
+		sentence_num(buf, &sinfo);
+		
+		if(sinfo.num == 0){
+			// 文の塊になるまで読み込み続ける
+			for(i=0;;i++){
+				if(is_sentence(buf)){
+					break;
+				}
+				if(i != 0){
+					
+				}
 			}
 		}
 		
