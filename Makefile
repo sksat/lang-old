@@ -7,7 +7,6 @@ SRC	= test.src
 	gcc -c $< $(CFLAGS)
 
 all:
-	make -C liblang
 	make $(TARGET)
 
 $(TARGET):$(OBJS)
