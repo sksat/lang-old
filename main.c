@@ -4,6 +4,10 @@
 
 //#include "lang.h"
 
+#define MAX_LINE_LEN	256
+#define INTERPRET	0
+#define COMPILE		1
+
 int EXEC_MODE;
 
 int langMainLoop(FILE *fp);
@@ -28,21 +32,18 @@ int main(int argc, char **argv){
 }
 
 int langMainLoop(FILE *fp){
-        char buf[MAX_LINE_NUM];
+        char buf[MAX_LINE_LEN];
 
         for(;;){
                 if(EXEC_MODE == INTERPRET){
                         printf("> ");
                 }
 
-                if(fgets(buf, MAX_LINE_NUM, fp) == NULL){
+                if(fgets(buf, MAX_LINE_LEN, fp) == NULL){
                         return 0;
                 }
-
-//              printf("%s", buf);
                 int len = strlen(buf);
-//              printf("len=%d\n", len);
 
-                serch_char();
+                
         }
 }
