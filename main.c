@@ -8,6 +8,12 @@
 #define INTERPRET	0
 #define COMPILE		1
 
+typedef struct {
+	char *fname;
+	unsigned int line;
+	char *token;
+}DEBUG_INFO;
+
 int EXEC_MODE;
 
 int langMainLoop(FILE *fp);
@@ -32,18 +38,37 @@ int main(int argc, char **argv){
 }
 
 int langMainLoop(FILE *fp){
-        char buf[MAX_LINE_LEN];
+	char *buf;
+	int i,j;
+	
+	buf = (char*)malloc(sizeof(char)*MAX_LINE_LEN);
+	
+	for(;;){
+		if(EXEC_MODE == INTERPRET){
+			printf("> ");
+		}
 
-        for(;;){
-                if(EXEC_MODE == INTERPRET){
-                        printf("> ");
-                }
-
-                if(fgets(buf, MAX_LINE_LEN, fp) == NULL){
-                        return 0;
-                }
+		// get line
+//		if(fgets(buf, MAX_LINE_LEN, fp) == NULL){
+//			return 0;
+//		}
+//		
+//		if(!(is_sentence(buf))){
+//			
+//		}
+		
+		// 文の塊になるまで読み込み続ける
+		for(i=0;;i++){
+			if(is_sentence(buf)){
+				break;
+			}
+			if(i != 0){
+				
+			}
+		}
+		
                 int len = strlen(buf);
-
                 
+		
         }
 }
