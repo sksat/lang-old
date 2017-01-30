@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "lang.h"
+//#include "lang.h"
 
 int EXEC_MODE;
 
@@ -27,4 +27,22 @@ int main(int argc, char **argv){
 	return langMainLoop(fp);
 }
 
+int langMainLoop(FILE *fp){
+        char buf[MAX_LINE_NUM];
 
+        for(;;){
+                if(EXEC_MODE == INTERPRET){
+                        printf("> ");
+                }
+
+                if(fgets(buf, MAX_LINE_NUM, fp) == NULL){
+                        return 0;
+                }
+
+//              printf("%s", buf);
+                int len = strlen(buf);
+//              printf("len=%d\n", len);
+
+                serch_char();
+        }
+}
