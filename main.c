@@ -14,15 +14,11 @@ typedef struct {
 	char *token;
 }DEBUG_INFO;
 
-typedef struct {
-	int num;
-	char *str;
-}SENTENCE_INFO;
-
 int EXEC_MODE;
 
 int langMainLoop(FILE *fp);
 int is_sentence(char *buf);
+int sentence_num(char *buf);
 
 int main(int argc, char **argv){
 	FILE *fp;
@@ -55,27 +51,40 @@ int langMainLoop(FILE *fp){
 		}
 
 		// get line
-//		if(fgets(buf, MAX_LINE_LEN, fp) == NULL){
-//			return 0;
-//		}
-//		
-//		if(!(is_sentence(buf))){
-//			
-//		}
-		SENTENCE_INFO sinfo;
+		if(fgets(buf, MAX_LINE_LEN, fp) == NULL){ return 0; }
+skip_fgets:
+		int snum = sentence_num(buf);
 		
-		sentence_num(buf, &sinfo);
-		
-		if(sinfo.num == 0){
-			// 文の塊になるまで読み込み続ける
-			for(i=0;;i++){
-				if(is_sentence(buf)){
-					break;
-				}
-				if(i != 0){
-					
-				}
+		if(snum <= 0){
+			char *tmp = (char*)malloc(sizeof(char)*MAX_LINE_LEN);
+			if(fgets(tmp, MAX_LINE_LEN, fp) == NULL){
+				break;
 			}
+			
+			int buflen = strlen(buf);
+			int tmplen = strlen(tmp);
+			
+			char *buf2 = (char*)malloc(sizeof(char)*(
+					buflen + tmplen + 1)); // \0
+			strcpy(buf2, buf); //まずはbufをコピー
+			strcpy(&buf2[buflen+1], tmp);
+			
+			free(buf);
+			free(tmp);
+
+			buf = buf2;
+			goto skip_fgets;
+		}
+		
+		if(snum > 1){
+			int len = sentence_len(buf);
+			char *buf2 = (char*)malloc(sizeof(char) * (len+1));
+			strcpy_n(buf2, buf, len);
+			buf2[len] = '\0';
+			char *tmp = (char*)malloc(sizeof(char) * (strlen(buf) - len));
+			strcpy_n(tmp, &buf[len+1],  strlen(buf)-len);
+			free(buf);
+			buf = tmp;
 		}
 		
                 int len = strlen(buf);
