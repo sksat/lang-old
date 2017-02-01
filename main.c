@@ -15,10 +15,20 @@ typedef struct {
 }DEBUG_INFO;
 
 int EXEC_MODE;
+char* PROMPT	= "> ";
 
 int langMainLoop(FILE *fp);
 int is_sentence(char *buf);
 int sentence_num(char *buf);
+int sentence_len(char *buf);
+
+int sentence_num(char *buf){
+	return 0;
+}
+
+int sentence_len(char *buf){
+	return 0;
+}
 
 int main(int argc, char **argv){
 	FILE *fp;
@@ -41,21 +51,25 @@ int main(int argc, char **argv){
 
 int langMainLoop(FILE *fp){
 	char *buf;
+	int snum;
 	int i,j;
 	
+	//バッファの確保
 	buf = (char*)malloc(sizeof(char)*MAX_LINE_LEN);
 	
 	for(;;){
+		// インタプリタの時はプロンプト表示
 		if(EXEC_MODE == INTERPRET){
-			printf("> ");
+			printf("%s", PROMPT);
 		}
 
 		// get line
 		if(fgets(buf, MAX_LINE_LEN, fp) == NULL){ return 0; }
+
 skip_fgets:
-		int snum = sentence_num(buf);
+		snum = sentence_num(buf);
 		
-		if(snum <= 0){
+		if(snum < 0){
 			char *tmp = (char*)malloc(sizeof(char)*MAX_LINE_LEN);
 			if(fgets(tmp, MAX_LINE_LEN, fp) == NULL){
 				break;
@@ -79,10 +93,10 @@ skip_fgets:
 		if(snum > 1){
 			int len = sentence_len(buf);
 			char *buf2 = (char*)malloc(sizeof(char) * (len+1));
-			strcpy_n(buf2, buf, len);
+			strncpy(buf2, buf, len);
 			buf2[len] = '\0';
 			char *tmp = (char*)malloc(sizeof(char) * (strlen(buf) - len));
-			strcpy_n(tmp, &buf[len+1],  strlen(buf)-len);
+			strncpy(tmp, &buf[len+1],  strlen(buf)-len);
 			free(buf);
 			buf = tmp;
 		}
