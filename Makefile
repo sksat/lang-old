@@ -1,7 +1,7 @@
 TARGET	= lang.exe
-OBJS	= main.o
+OBJS	= main.o strtols.o
 
-SRC	= test.src
+#SRC	= test.src
 
 %.o:%.c
 	gcc -c $< $(CFLAGS)
