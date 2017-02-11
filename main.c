@@ -2,11 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "strtols.h"
+
 //#include "lang.h"
 
 #define MAX_LINE_LEN	256
 #define INTERPRET	0
 #define COMPILE		1
+
+#define IGNORE_NEWLINE	"\\"	// 複数文字でも大丈夫なように''でなく""
 
 typedef struct {
 	char *fname;
@@ -15,14 +19,29 @@ typedef struct {
 }DEBUG_INFO;
 
 int EXEC_MODE;
-char* PROMPT	= "> ";
+
+char* PROMPT		= ">>> ";
+char* BROCK_PROMPT	= "... ";
+
 
 int langMainLoop(FILE *fp);
 int is_sentence(char *buf);
-int sentence_num(char *buf);
+int sentence_num(char *buf, int read);
 int sentence_len(char *buf);
 
-int sentence_num(char *buf){
+int sentence_num(char *buf, int read){
+	int len = strlen(buf);
+	
+	int i = findstr(buf+read, IGNORE_NEWLINE), j;
+	if(i >= 0){
+		rmstr(buf+read+i, strlen(IGNORE_NEWLINE));
+		for(j=0;j<(len-read-i);j++){
+			if((buf+read+i)[j] == '\n'){
+				(buf+read+i)[j] = ' ';
+			}
+		}
+		return -1;
+	}
 	return 0;
 }
 
@@ -65,23 +84,30 @@ int langMainLoop(FILE *fp){
 
 		// get line
 		if(fgets(buf, MAX_LINE_LEN, fp) == NULL){ return 0; }
+		i = 0;
 
 skip_fgets:
-		snum = sentence_num(buf);
+		snum = sentence_num(buf, i);
+		printf("snum = %d\n", snum);
+		printf("buf = %s\n", buf);
 		
 		if(snum < 0){
 			char *tmp = (char*)malloc(sizeof(char)*MAX_LINE_LEN);
+
+			printf("%s", BROCK_PROMPT);
+
 			if(fgets(tmp, MAX_LINE_LEN, fp) == NULL){
 				break;
 			}
 			
 			int buflen = strlen(buf);
 			int tmplen = strlen(tmp);
+			i += tmplen;
 			
 			char *buf2 = (char*)malloc(sizeof(char)*(
 					buflen + tmplen + 1)); // \0
 			strcpy(buf2, buf); //まずはbufをコピー
-			strcpy(&buf2[buflen+1], tmp);
+			strcpy(&buf2[buflen], tmp);
 			
 			free(buf);
 			free(tmp);
@@ -103,6 +129,6 @@ skip_fgets:
 		
                 int len = strlen(buf);
                 
-		
+		printf("buf:%s\n", buf);
         }
 }
